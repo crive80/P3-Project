@@ -31,7 +31,11 @@ public class Client {
     public class ServerChecker extends Thread {
         public ServerChecker() { setDaemon(true); }
         public void run() {
-            while (true) { checkServer(); }
+            while (true) { 
+                try {
+                    checkServer(); 
+                } catch (Exception exc) { exc.printStackTrace(); }
+            }
         }
         public void checkServer() throws Exception {
             clientGUI.setServerList(Naming.list("rmi://" + HOST + "/Server/"));
