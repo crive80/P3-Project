@@ -34,4 +34,4 @@ start:
 	java Client.Client client2 server2 5 &
 
 stop:
-	killall -q rmiregistry
+	killall -q rmiregistry &

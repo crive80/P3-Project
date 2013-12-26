@@ -14,7 +14,8 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     private static final String HOST = "localhost";
     private final int port = 3456;
     private ServerSocket s = null;
-    private Vector<ClientInterface> clients; 
+    private Vector<ClientInterface> localClients; 
+    private Vector<ClientInterface> globalClients;
     
     public Server(String n) throws RemoteException {
         serverName = n;
@@ -23,7 +24,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         c1.start();
         ClientChecker c2 = new ClientChecker();
         c2.start(); 
-        clients = new Vector<ClientInterface>();
+        localClients = new Vector<ClientInterface>();
     }
 
     public String getServerName() { return serverName; }
@@ -54,14 +55,14 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         public ClientChecker() { setDaemon(true); };
         public void run() {
             while (true) {
-                if (!clients.isEmpty()) {
-                    String[] c = new String[clients.size()];
+                if (!localClients.isEmpty()) {
+                    String[] c = new String[localClients.size()];
                     for (int i=0; i<c.length; i++) {
                         try {
-                            c[i] = clients.elementAt(i).getClientName();
+                            c[i] = localClients.elementAt(i).getClientName();
                         } catch(RemoteException exc) { 
                             serverGui.appendLog("Client disconnesso\n"); 
-                            clients.remove(i);
+                            localClients.remove(i);
                         }
                     }
                     serverGui.setClientList(c);
@@ -71,10 +72,14 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     }
 
     public void clientConnect(ClientInterface i) {
-        clients.add(i);
+        localClients.add(i);
         try {
             serverGui.appendLog("Client " + i.getClientName() + " connesso.\n");
         } catch (RemoteException exc) { serverGui.appendLog("Problemi di connessione."); }
+    }
+
+    public Vector<ClientInterface> getClients() {
+        return localClients;
     }
     
     public static void main(String[] args) throws Exception {

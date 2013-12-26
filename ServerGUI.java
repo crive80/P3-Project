@@ -25,10 +25,12 @@ public class ServerGUI extends JFrame {
     private static final int wgap = 5;
     private JPanel contentPane;
     private JPanel topPanel;
-    private JPanel centerPanel;
+    private JPanel centerWestPanel;
+    private JPanel centerEastPanel;
     private JPanel bottomPanel;
     private JTextArea log;
-    private JList clientList;
+    private JList localClientList;
+    private JList globalClientList;
     private JList serverList;
     private Server serverReference;
     
@@ -46,21 +48,31 @@ public class ServerGUI extends JFrame {
         topPanel.setOpaque(true);
         topPanel.setBackground(Color.WHITE);
         topPanel.setBorder(
-            BorderFactory.createTitledBorder("Client connessi"));
-        clientList = new JList();
-        topPanel.add(clientList, BorderLayout.PAGE_START);
+            BorderFactory.createTitledBorder("Server connessi"));
+        serverList = new JList();
+        topPanel.add(serverList, BorderLayout.PAGE_START);
         
     }
     
     private void setCenterPanel() {
-        centerPanel = new JPanel();
-        centerPanel.setOpaque(true);
-        centerPanel.setBackground(Color.WHITE);
-        centerPanel.setBorder(
-                BorderFactory.createTitledBorder("Server connessi")
+        centerWestPanel = new JPanel();
+        centerWestPanel.setOpaque(true);
+        centerWestPanel.setBackground(Color.WHITE);
+        centerWestPanel.setBorder(
+                BorderFactory.createTitledBorder("Client connessi")
                 );
-        serverList = new JList();
-        centerPanel.add(serverList, BorderLayout.CENTER);
+        localClientList = new JList();
+        centerWestPanel.add(localClientList, BorderLayout.WEST);
+        centerWestPanel.setPreferredSize(new Dimension((int) width/2 -25, (int) height/2));
+
+        centerEastPanel = new JPanel();
+        centerEastPanel.setOpaque(true);
+        centerEastPanel.setBackground(Color.WHITE);
+        centerEastPanel.setBorder(
+            BorderFactory.createTitledBorder("Client connessi al sistema"));
+        globalClientList = new JList();
+        centerEastPanel.add(globalClientList);
+        centerEastPanel.setPreferredSize(new Dimension((int) width/2 -25, (int) height/2));
     }
     
     private void setBottomPanel() {
@@ -105,7 +117,8 @@ public class ServerGUI extends JFrame {
         setCenterPanel();
         setBottomPanel();
         contentPane.add(topPanel,BorderLayout.PAGE_START);
-        contentPane.add(centerPanel,BorderLayout.CENTER);
+        contentPane.add(centerWestPanel,BorderLayout.WEST);
+        contentPane.add(centerEastPanel,BorderLayout.EAST);
         contentPane.add(bottomPanel,BorderLayout.PAGE_END);
         setContentPane(contentPane);
         
@@ -127,7 +140,7 @@ public class ServerGUI extends JFrame {
     public void setClientList(String[] l) {
         DefaultListModel<String> model = new DefaultListModel<String>();
         for (int i=0; i<l.length; i++) { model.addElement(l[i]); }
-        clientList.setModel(model);
+        localClientList.setModel(model);
     }
     
     public static void main(String[] args, Server s) {
