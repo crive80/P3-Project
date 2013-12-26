@@ -60,7 +60,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                         try {
                             c[i] = clients.elementAt(i).getClientName();
                         } catch(RemoteException exc) { 
-                            System.out.println("Client non presente nel sistema."); 
+                            serverGui.appendLog("Client disconnesso\n"); 
                             clients.remove(i);
                         }
                     }

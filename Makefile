@@ -17,7 +17,7 @@ Server.class : Server.java
 
 ClientInterface.class : ClientInterface.java
 	javac ClientInterface.java -d ./
-	
+
 Client.class : Client.java
 	javac Client.java -d ./
 
@@ -26,10 +26,10 @@ clean:
 
 start: 
 	rmiregistry &
-	sleep 2 &
+	sleep 2
 	java Server.Server server1 &
 	java Server.Server server2 &
-	sleep 2 &
+	sleep 2
 	java Client.Client client1 server1 5 &
 	java Client.Client client2 server2 5 &
 
