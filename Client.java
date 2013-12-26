@@ -33,7 +33,7 @@ public class Client {
         public void run() {
             while (true) { checkServer(); }
         }
-        public checkServer() throws Exception {
+        public void checkServer() throws Exception {
             clientGUI.setServerList(Naming.list("rmi://" + HOST + "/Server/"));
         }
     }
