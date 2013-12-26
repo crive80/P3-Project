@@ -6,6 +6,11 @@ package GUI;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import Server.*;
+import java.rmi.*;
+import java.net.MalformedURLException;
 
 /**
  *
@@ -25,6 +30,7 @@ public class ServerGUI extends JFrame {
     private JTextArea log;
     private JList clientList;
     private JList serverList;
+    private Server serverReference;
     
     private void setMainPanel() {
         contentPane = new JPanel();
@@ -41,9 +47,7 @@ public class ServerGUI extends JFrame {
         topPanel.setBackground(Color.WHITE);
         topPanel.setBorder(
             BorderFactory.createTitledBorder("Client connessi"));
-        
-        String data[] = {"Item1", "Item2", "Item3", "Item4", "Item5", "Item6"};
-        clientList = new JList(data);
+        clientList = new JList();
         topPanel.add(clientList, BorderLayout.PAGE_START);
         
     }
@@ -55,9 +59,7 @@ public class ServerGUI extends JFrame {
         centerPanel.setBorder(
                 BorderFactory.createTitledBorder("Server connessi")
                 );
-        
-        String data[] = {"Server1", "Server2", "Server3", "Server4", "Server5"};
-        serverList = new JList(data);
+        serverList = new JList();
         centerPanel.add(serverList, BorderLayout.CENTER);
     }
     
@@ -77,11 +79,26 @@ public class ServerGUI extends JFrame {
         bottomPanel.add(log,BorderLayout.CENTER);
     }
     
-    public ServerGUI(String n) {
+    class WindowEventHandler extends WindowAdapter {
+        public void windowClosing(WindowEvent evt) {
+            System.out.println("Window closed");
+            try {
+                serverReference.disconnect();
+            }
+            catch (RemoteException e1) { System.out.println("Errore di connessione."); }
+            catch (MalformedURLException e2) { System.out.println("Errore di malformazione URL"); }
+            catch (NotBoundException e3) { System.out.println("NotBoundException"); }
+        }
+    }
+
+    public ServerGUI(String n, Server s) {
         super(n);
         title = n;        
+        serverReference = s;
         width = (int) screenSize.getWidth()/4;
         height = (int) screenSize.getHeight()/2;
+
+        addWindowListener(new WindowEventHandler());
         
         setMainPanel();
         setTopPanel();
@@ -106,8 +123,14 @@ public class ServerGUI extends JFrame {
         for (int i=0; i<l.length; i++) { model.addElement(l[i]); }
         serverList.setModel(model);
     }
+
+    public void setClientList(String[] l) {
+        DefaultListModel<String> model = new DefaultListModel<String>();
+        for (int i=0; i<l.length; i++) { model.addElement(l[i]); }
+        clientList.setModel(model);
+    }
     
-    public static void main(String[] args) {
-        ServerGUI g = new ServerGUI("Server1");
+    public static void main(String[] args, Server s) {
+        ServerGUI g = new ServerGUI("Server1",s);
     }
 }

@@ -1,7 +1,7 @@
 # Makefile da inserire nella root del progetto, si occupa di compilare il progetto, di farlo partire con un comportamento di default, di pulire il progetto dai file inutili e di
 # terminare l'applicazione
 
-progetto : ClientGUI.class ServerGUI.class ServerInterface.class Server.class Client.class
+progetto : ClientGUI.class ServerGUI.class ServerInterface.class Server.class ClientInterface.class Client.class
 
 ClientGUI.class : ClientGUI.java
 	javac ClientGUI.java -d ./
@@ -15,6 +15,9 @@ ServerInterface.class : ServerInterface.java
 Server.class : Server.java
 	javac Server.java -d ./
 
+ClientInterface.class : ClientInterface.java
+	javac ClientInterface.java -d ./
+	
 Client.class : Client.java
 	javac Client.java -d ./
 
@@ -29,3 +32,6 @@ start:
 	sleep 2 &
 	java Client.Client client1 server1 5 &
 	java Client.Client client2 server2 5 &
+
+stop:
+	killall -q rmiregistry
