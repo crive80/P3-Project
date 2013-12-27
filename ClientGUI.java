@@ -7,7 +7,10 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.*;
 import Client.Client;
+import java.util.Vector;
 import java.awt.event.*;
+import java.rmi.*;
+import java.net.MalformedURLException;
 
 /**
  *
@@ -22,15 +25,24 @@ public class ClientGUI extends JFrame {
     private static final int wgap = 5;
     private JPanel contentPane;
     private JPanel topPanel;
-    private JPanel centerPanel;
+    private JPanel centerWestPanel;
+    private JPanel centerEastPanel;
     private JPanel bottomPanel;
     private JTextArea log;
     private JTextField searchField;
     private JButton searchButton;
     private JList serverList;
+    private JList resourceList;
     private JButton connectButton;
-    private Client ref;
+    private Client clientReference;
     
+    class WindowEventHandler extends WindowAdapter {
+        public void windowClosing(WindowEvent evt) {
+            System.out.println("Window closed");
+            clientReference.disconnect();
+        }
+    }
+
     private void setMainPanel() {
         contentPane = new JPanel();
         contentPane.setOpaque(true);
@@ -57,10 +69,10 @@ public class ClientGUI extends JFrame {
     }
     
     private void setCenterPanel() {
-        centerPanel = new JPanel();
-        centerPanel.setOpaque(true);
-        centerPanel.setBackground(Color.WHITE);
-        centerPanel.setBorder(
+        centerWestPanel = new JPanel();
+        centerWestPanel.setOpaque(true);
+        centerWestPanel.setBackground(Color.WHITE);
+        centerWestPanel.setBorder(
                 BorderFactory.createTitledBorder("Server disponibili")
                 );
         serverList = new JList();
@@ -69,13 +81,23 @@ public class ClientGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String s = (String) serverList.getSelectedValue();
                 try {
-                    ref.connect(s);
+                    clientReference.connect(s);
                 } catch (Exception exc) { exc.printStackTrace(); }
             }
-        });
-        
-        centerPanel.add(serverList);
-        centerPanel.add(connectButton);
+        });        
+        centerWestPanel.add(serverList);
+        centerWestPanel.add(connectButton);
+        centerWestPanel.setPreferredSize(new Dimension((int) width/2 -25, (int) height/2));
+
+        centerEastPanel = new JPanel();
+        centerEastPanel.setOpaque(true);
+        centerEastPanel.setBackground(Color.WHITE);
+        centerEastPanel.setBorder(
+                BorderFactory.createTitledBorder("Risorse disponibili")
+                );
+        centerEastPanel.setPreferredSize(new Dimension((int) width/2 -25, (int) height/2));
+        resourceList = new JList();
+        centerEastPanel.add(resourceList);
     }
     
     private void setBottomPanel() {
@@ -96,7 +118,7 @@ public class ClientGUI extends JFrame {
     
     public ClientGUI(String n, Client r) {
         super(n);
-        ref = r;
+        clientReference = r;
         title = n;        
         width = (int) screenSize.getWidth()/4;
         height = (int) screenSize.getHeight()/2;
@@ -106,7 +128,8 @@ public class ClientGUI extends JFrame {
         setCenterPanel();
         setBottomPanel();
         contentPane.add(topPanel,BorderLayout.PAGE_START);
-        contentPane.add(centerPanel,BorderLayout.CENTER);
+        contentPane.add(centerWestPanel,BorderLayout.WEST);
+        contentPane.add(centerEastPanel,BorderLayout.EAST);
         contentPane.add(bottomPanel,BorderLayout.PAGE_END);
         setContentPane(contentPane);
         
@@ -119,6 +142,12 @@ public class ClientGUI extends JFrame {
         DefaultListModel<String> model = new DefaultListModel<String>();
         for (int i=0; i<l.length; i++) { model.addElement(l[i]); }
         serverList.setModel(model);
+    }
+
+    public void setResourceList(Vector<String> l) {
+        DefaultListModel<String> model = new DefaultListModel<String>();
+        for (int i=0; i<l.size(); i++) { model.addElement(l.elementAt(i)); }
+        resourceList.setModel(model);
     }
 
     public void appendLog(String s) {

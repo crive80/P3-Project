@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 import Server.*;
 import java.rmi.*;
 import java.net.MalformedURLException;
+import java.util.Vector;
 
 /**
  *
@@ -27,11 +28,13 @@ public class ServerGUI extends JFrame {
     private JPanel topPanel;
     private JPanel centerWestPanel;
     private JPanel centerEastPanel;
+    private JPanel centerPanel;
     private JPanel bottomPanel;
     private JTextArea log;
     private JList localClientList;
     private JList globalClientList;
     private JList serverList;
+    private JList resourceList;
     private Server serverReference;
     
     private void setMainPanel() {
@@ -59,20 +62,27 @@ public class ServerGUI extends JFrame {
         centerWestPanel.setOpaque(true);
         centerWestPanel.setBackground(Color.WHITE);
         centerWestPanel.setBorder(
-                BorderFactory.createTitledBorder("Client connessi")
-                );
+                BorderFactory.createTitledBorder("Client locali"));
         localClientList = new JList();
         centerWestPanel.add(localClientList, BorderLayout.WEST);
-        centerWestPanel.setPreferredSize(new Dimension((int) width/2 -25, (int) height/2));
+        centerWestPanel.setPreferredSize(new Dimension((int) width/3, (int) height/2));
 
         centerEastPanel = new JPanel();
         centerEastPanel.setOpaque(true);
         centerEastPanel.setBackground(Color.WHITE);
         centerEastPanel.setBorder(
-            BorderFactory.createTitledBorder("Client connessi al sistema"));
+            BorderFactory.createTitledBorder("Client globali"));
         globalClientList = new JList();
         centerEastPanel.add(globalClientList);
-        centerEastPanel.setPreferredSize(new Dimension((int) width/2 -25, (int) height/2));
+        centerEastPanel.setPreferredSize(new Dimension((int) width/3, (int) height/2));
+
+        centerPanel = new JPanel();
+        centerPanel.setOpaque(true);
+        centerPanel.setBackground(Color.WHITE);
+        centerPanel.setBorder(
+            BorderFactory.createTitledBorder("Risorse"));
+        resourceList = new JList();
+        centerPanel.add(resourceList,BorderLayout.CENTER);
     }
     
     private void setBottomPanel() {
@@ -119,6 +129,7 @@ public class ServerGUI extends JFrame {
         contentPane.add(topPanel,BorderLayout.PAGE_START);
         contentPane.add(centerWestPanel,BorderLayout.WEST);
         contentPane.add(centerEastPanel,BorderLayout.EAST);
+        contentPane.add(centerPanel,BorderLayout.CENTER);
         contentPane.add(bottomPanel,BorderLayout.PAGE_END);
         setContentPane(contentPane);
         
@@ -141,6 +152,22 @@ public class ServerGUI extends JFrame {
         DefaultListModel<String> model = new DefaultListModel<String>();
         for (int i=0; i<l.length; i++) { model.addElement(l[i]); }
         localClientList.setModel(model);
+    }
+
+    public void setGlobalClientList(Vector<String> l) {
+        String[] s = new String[l.size()];
+        for (int i=0; i<l.size(); i++) s[i] = l.elementAt(i);
+        DefaultListModel<String> model = new DefaultListModel<String>();
+        for (int i=0; i<s.length; i++) { model.addElement(s[i]); }
+        globalClientList.setModel(model);
+    }
+
+    public void setResourceList(Vector<String> l) {
+        String[] s = new String[l.size()];
+        for (int i=0; i<l.size(); i++){ s[i] = l.elementAt(i); }
+        DefaultListModel<String> model = new DefaultListModel<String>();
+        for (int i=0; i<s.length; i++) { model.addElement(s[i]); }
+        resourceList.setModel(model);
     }
     
     public static void main(String[] args, Server s) {
