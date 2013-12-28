@@ -61,6 +61,13 @@ public class ClientGUI extends JFrame {
         
         searchField = new JTextField(20);
         searchButton = new JButton("Cerca");
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String s = searchField.getText();
+                String [] a = s.split("\\s+"); // separo le parole
+                clientReference.sendRequest(a[0],a[1]);
+            }
+        });
         
         topPanel.add(searchField);
         topPanel.add(searchButton);

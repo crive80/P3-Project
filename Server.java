@@ -135,6 +135,16 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     public Vector<ClientInterface> getClients() {
         return localClients;
     }
+
+    public Vector<ClientInterface> getRequest(ResourceInterface r) {
+        Vector<ClientInterface> x = new Vector<ClientInterface>();
+        for (int i=0; i<localClients.size(); i++) {
+            try {
+                if (localClients.elementAt(i).searchResource(r)) x.add(localClients.elementAt(i));
+            } catch (RemoteException e) { serverGui.appendLog("Errore di connessione"); }
+        }
+        return x;
+    }
     
     public static void main(String[] args) throws Exception {
         try {

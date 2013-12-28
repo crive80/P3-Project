@@ -25,7 +25,9 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         ServerChecker sc = new ServerChecker(); sc.start();
         try {
             ServerInterface i = (ServerInterface) Naming.lookup("rmi://" + HOST + "/Server/" + s);
+            serverConnected = i;
             i.clientConnect(this);
+            clientGUI.appendLog("Connesso al server " + i.getServerName());
         } catch (Exception e) {
             clientGUI.appendLog("Il server " + s + " non è presente nel sistema.");
         }
@@ -77,6 +79,27 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
                 serverConnected.clientDisconnect(this);
             } catch (RemoteException e) { clientGUI.appendLog("Errore di connessione"); System.out.println("Errore di connessione"); }
         }
+    }
+
+    public void sendRequest(String s1, String s2) {
+        try {
+            ResourceInterface aux = new Resource(s1,Integer.parseInt(s2));
+            Vector<ClientInterface> v = serverConnected.getRequest(aux);
+            for (int i=0; i<res.size(); i++) {
+                if (aux.compare(res.elementAt(i)) == true) clientGUI.appendLog("True");
+            }
+            clientGUI.appendLog(v.size() + " client trovati");
+        } catch (RemoteException e) { clientGUI.appendLog("Errore di connessione"); }
+    }
+
+    public boolean searchResource(ResourceInterface r) {
+        for (int i=0; i<res.size(); i++) {
+            try {
+            if (res.elementAt(i).compare(r))
+                return true;
+            } catch (RemoteException e) { clientGUI.appendLog("Errore di connessione"); }
+        }
+        return false;
     }
 
     public static void main(String[] args) {

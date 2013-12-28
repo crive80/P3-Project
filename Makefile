@@ -37,6 +37,7 @@ start:
 	java Server.Server server2 &
 	sleep 2
 	java Client.Client client1 server1 5 r1 5 r2 7 r3 8 &
+	java Client.Client client3 server1 6 g1 4 g2 3 &
 	java Client.Client client2 server2 5 r4 2 r5 5 r6 1 &
 
 stop:
