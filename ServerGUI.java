@@ -28,13 +28,11 @@ public class ServerGUI extends JFrame {
     private JPanel topPanel;
     private JPanel centerWestPanel;
     private JPanel centerEastPanel;
-    private JPanel centerPanel;
     private JPanel bottomPanel;
     private JTextArea log;
     private JList localClientList;
     private JList globalClientList;
     private JList serverList;
-    private JList resourceList;
     private Server serverReference;
     
     private void setMainPanel() {
@@ -42,8 +40,8 @@ public class ServerGUI extends JFrame {
         contentPane.setOpaque(true);
         contentPane.setBackground(Color.WHITE);
         contentPane.setBorder(
-            BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        contentPane.setLayout(new BorderLayout(5, 5));
+            BorderFactory.createEmptyBorder(wgap, hgap, wgap, hgap));
+        contentPane.setLayout(new BorderLayout(wgap, hgap));
     }
     
     private void setTopPanel() {
@@ -51,7 +49,8 @@ public class ServerGUI extends JFrame {
         topPanel.setOpaque(true);
         topPanel.setBackground(Color.WHITE);
         topPanel.setBorder(
-            BorderFactory.createTitledBorder("Server connessi"));
+            BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK),
+                "Server connessi",TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial",Font.PLAIN,10)));
         serverList = new JList();
         topPanel.add(serverList, BorderLayout.PAGE_START);
         
@@ -62,27 +61,23 @@ public class ServerGUI extends JFrame {
         centerWestPanel.setOpaque(true);
         centerWestPanel.setBackground(Color.WHITE);
         centerWestPanel.setBorder(
-                BorderFactory.createTitledBorder("Client locali"));
+                BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK),
+                "Client locali connessi",TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial",Font.PLAIN,10)));
         localClientList = new JList();
         centerWestPanel.add(localClientList, BorderLayout.WEST);
-        centerWestPanel.setPreferredSize(new Dimension((int) width/3, (int) height/2));
+        centerWestPanel.setPreferredSize(new Dimension((int) width/2-10, (int) height/2));
 
         centerEastPanel = new JPanel();
         centerEastPanel.setOpaque(true);
         centerEastPanel.setBackground(Color.WHITE);
         centerEastPanel.setBorder(
-            BorderFactory.createTitledBorder("Client globali"));
+            BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK),
+                "Client globali connessi",TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial",Font.PLAIN,10)));
         globalClientList = new JList();
         centerEastPanel.add(globalClientList);
-        centerEastPanel.setPreferredSize(new Dimension((int) width/3, (int) height/2));
-
-        centerPanel = new JPanel();
-        centerPanel.setOpaque(true);
-        centerPanel.setBackground(Color.WHITE);
-        centerPanel.setBorder(
-            BorderFactory.createTitledBorder("Risorse"));
-        resourceList = new JList();
-        centerPanel.add(resourceList,BorderLayout.CENTER);
+        centerEastPanel.setPreferredSize(new Dimension((int) width/2-10, (int) height/2));
+        JScrollPane scroll = new JScrollPane(centerEastPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
     
     private void setBottomPanel() {
@@ -90,7 +85,8 @@ public class ServerGUI extends JFrame {
         bottomPanel.setOpaque(true);
         bottomPanel.setBackground(Color.WHITE);
         bottomPanel.setBorder(
-                BorderFactory.createTitledBorder("Log"));
+                BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK),
+                "Log",TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial",Font.PLAIN,10)));
         bottomPanel.setLayout(new BorderLayout());
         log = new JTextArea();
         log.setRows(10);
@@ -129,7 +125,6 @@ public class ServerGUI extends JFrame {
         contentPane.add(topPanel,BorderLayout.PAGE_START);
         contentPane.add(centerWestPanel,BorderLayout.WEST);
         contentPane.add(centerEastPanel,BorderLayout.EAST);
-        contentPane.add(centerPanel,BorderLayout.CENTER);
         contentPane.add(bottomPanel,BorderLayout.PAGE_END);
         setContentPane(contentPane);
         
@@ -160,14 +155,6 @@ public class ServerGUI extends JFrame {
         DefaultListModel<String> model = new DefaultListModel<String>();
         for (int i=0; i<s.length; i++) { model.addElement(s[i]); }
         globalClientList.setModel(model);
-    }
-
-    public void setResourceList(Vector<String> l) {
-        String[] s = new String[l.size()];
-        for (int i=0; i<l.size(); i++){ s[i] = l.elementAt(i); }
-        DefaultListModel<String> model = new DefaultListModel<String>();
-        for (int i=0; i<s.length; i++) { model.addElement(s[i]); }
-        resourceList.setModel(model);
     }
     
     public static void main(String[] args, Server s) {

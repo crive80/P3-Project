@@ -19,7 +19,7 @@ public class Resource extends UnicastRemoteObject implements ResourceInterface {
 	}
 
 	public boolean compare(ResourceInterface r) throws RemoteException {
-		if (this.getName() == r.getName() && this.getParts() == r.getParts()) return true;
+		if (this.getName().equals(r.getName()) && this.getParts() == r.getParts()) return true;
 		else return false;
 	}
 }

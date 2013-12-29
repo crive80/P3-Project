@@ -9,6 +9,8 @@ import javax.swing.border.*;
 import Client.Client;
 import java.util.Vector;
 import java.awt.event.*;
+import java.awt.Font;
+import javax.swing.plaf.basic.BasicBorders;
 import java.rmi.*;
 import java.net.MalformedURLException;
 
@@ -27,11 +29,13 @@ public class ClientGUI extends JFrame {
     private JPanel topPanel;
     private JPanel centerWestPanel;
     private JPanel centerEastPanel;
+    private JPanel centerPanel;
     private JPanel bottomPanel;
     private JTextArea log;
     private JTextField searchField;
     private JButton searchButton;
     private JList serverList;
+    private JList downloadQueue;
     private JList resourceList;
     private JButton connectButton;
     private Client clientReference;
@@ -57,10 +61,12 @@ public class ClientGUI extends JFrame {
         topPanel.setOpaque(true);
         topPanel.setBackground(Color.WHITE);
         topPanel.setBorder(
-            BorderFactory.createTitledBorder("Cerca file"));
+            BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK),
+                "Cerca file",TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial",Font.PLAIN,10)));
         
-        searchField = new JTextField(20);
+        searchField = new JTextField(10);
         searchButton = new JButton("Cerca");
+        searchButton.setFont(new Font("Arial",Font.BOLD,10));
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String s = searchField.getText();
@@ -68,9 +74,8 @@ public class ClientGUI extends JFrame {
                 clientReference.sendRequest(a[0],a[1]);
             }
         });
-        
-        topPanel.add(searchField);
-        topPanel.add(searchButton);
+        topPanel.add(searchField,BorderLayout.WEST);
+        topPanel.add(searchButton,BorderLayout.EAST);
         
         
     }
@@ -80,10 +85,12 @@ public class ClientGUI extends JFrame {
         centerWestPanel.setOpaque(true);
         centerWestPanel.setBackground(Color.WHITE);
         centerWestPanel.setBorder(
-                BorderFactory.createTitledBorder("Server disponibili")
-                );
+                BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK),
+                "Server disponibili",TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial",Font.PLAIN,10)));
         serverList = new JList();
+        serverList.setFont(new Font("Arial",Font.BOLD,6));
         connectButton = new JButton("Connetti");
+        connectButton.setFont(new Font("Arial",Font.BOLD,10));
         connectButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String s = (String) serverList.getSelectedValue();
@@ -92,18 +99,32 @@ public class ClientGUI extends JFrame {
                 } catch (Exception exc) { exc.printStackTrace(); }
             }
         });        
+        centerWestPanel.setLayout(new BoxLayout(centerWestPanel,BoxLayout.PAGE_AXIS));
         centerWestPanel.add(serverList);
         centerWestPanel.add(connectButton);
-        centerWestPanel.setPreferredSize(new Dimension((int) width/2 -25, (int) height/2));
+        //centerWestPanel.setPreferredSize(new Dimension((int) width/2 -25, (int) height/2));
 
+        centerPanel = new JPanel();
+        centerPanel.setOpaque(true);
+        centerPanel.setBackground(Color.WHITE);
+        centerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK),
+                "Coda download",TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial",Font.PLAIN,10)));
+        downloadQueue = new JList();
+        downloadQueue.setFont(new Font("Arial",Font.BOLD,6));
+        centerPanel.add(downloadQueue,BorderLayout.NORTH);
+        /*****/
+        DefaultListModel<String> model = new DefaultListModel<String>();
+        downloadQueue.setModel(model);
+        /****/
         centerEastPanel = new JPanel();
         centerEastPanel.setOpaque(true);
         centerEastPanel.setBackground(Color.WHITE);
         centerEastPanel.setBorder(
-                BorderFactory.createTitledBorder("Risorse disponibili")
-                );
-        centerEastPanel.setPreferredSize(new Dimension((int) width/2 -25, (int) height/2));
+                BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK),
+                "Risorse disponibili",TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial",Font.PLAIN,10)));
+        //centerEastPanel.setPreferredSize(new Dimension((int) width/2 -25, (int) height/2));
         resourceList = new JList();
+        resourceList.setFont(new Font("Arial",Font.BOLD,10));
         centerEastPanel.add(resourceList);
     }
     
@@ -112,9 +133,11 @@ public class ClientGUI extends JFrame {
         bottomPanel.setOpaque(true);
         bottomPanel.setBackground(Color.WHITE);
         bottomPanel.setBorder(
-                BorderFactory.createTitledBorder("Log"));
+                BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK),
+                "Log",TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial",Font.PLAIN,10)));
         bottomPanel.setLayout(new BorderLayout());
         log = new JTextArea();
+        log.setFont(new Font("Arial",Font.PLAIN,9));
         log.setRows(10);
         log.setEditable(false);
         log.setBackground(Color.BLACK);
@@ -137,6 +160,7 @@ public class ClientGUI extends JFrame {
         contentPane.add(topPanel,BorderLayout.PAGE_START);
         contentPane.add(centerWestPanel,BorderLayout.WEST);
         contentPane.add(centerEastPanel,BorderLayout.EAST);
+        contentPane.add(centerPanel,BorderLayout.CENTER);
         contentPane.add(bottomPanel,BorderLayout.PAGE_END);
         setContentPane(contentPane);
         
@@ -159,9 +183,5 @@ public class ClientGUI extends JFrame {
 
     public void appendLog(String s) {
         log.append(s + "\n");
-    }
-    
-    public static void main(String[] args) {
-        ClientGUI g = new ClientGUI("Client1",null);
     }
 }

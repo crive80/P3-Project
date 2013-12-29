@@ -39,6 +39,10 @@ start:
 	java Client.Client client1 server1 5 r1 5 r2 7 r3 8 &
 	java Client.Client client3 server1 6 g1 4 g2 3 &
 	java Client.Client client2 server2 5 r4 2 r5 5 r6 1 &
+	java Client.Client client4 server1 5 &
+	java Client.Client client5 server2 5 &
+	java Client.Client client6 server1 5 &
+	java Client.Client client7 server2 5 &
 
 stop:
 	killall -q rmiregistry &

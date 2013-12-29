@@ -123,7 +123,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 s.add(entry.getKey().getName() + ":" + entry.getKey().getParts() + " -> " + entry.getValue().getClientName());
             } catch (RemoteException exc) { serverGui.appendLog("Impossibile estrarre la Mappa di risorse, problemi di connessione."); } 
         }
-        serverGui.setResourceList(s);
     }
 
     public void clientDisconnect(ClientInterface i) {
