@@ -87,6 +87,12 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
 
     public void sendRequest(String s1, String s2) {
         try {
+            int x = Integer.parseInt(s2);
+        } catch (NumberFormatException e) { 
+            clientGUI.popError("Impossibile convertire la stringa in intero"); 
+            return;
+        }
+        try {
             ResourceInterface aux = new Resource(s1,Integer.parseInt(s2));
             // Controllo che il client non possegga già la risorsa cercata
             for (int i=0; i<res.size(); i++) {
