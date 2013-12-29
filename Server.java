@@ -52,6 +52,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                         checkServer();
                     } catch (Exception exc) { exc.printStackTrace(); }
                 }
+                try {
+                    sleep(10);
+                } catch (InterruptedException e) { System.out.println("ServerChecker Thread interrotto"); }
             }
         }
         public void checkServer() throws Exception {
@@ -83,7 +86,8 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     }
                     try {
                         checkSystemServers();
-                    } catch (Exception e) { e.printStackTrace(); }
+                    } catch (Exception e) { System.out.println(
+                        "CheckServerThread report: Server non più presente nel sistema"); }
                 }
             }
         }
@@ -95,7 +99,8 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                         ServerInterface in = (ServerInterface) Naming.lookup(systemServers.elementAt(i));
                         Vector<ClientInterface> aux = in.getClients();
                     for (int j=0; j<aux.size(); j++) globalClients.add(aux.elementAt(j).getClientName());
-                    } catch (Exception e1) { e1.printStackTrace(); }
+                    } catch (Exception e1) {  System.out.println(
+                        "CheckServerThread report: Server non più presente nel sistema"); }
                 }
                 serverGui.setGlobalClientList(globalClients); 
             }
@@ -136,13 +141,25 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     }
 
     public Vector<ClientInterface> getRequest(ResourceInterface r) {
-        Vector<ClientInterface> x = new Vector<ClientInterface>();
-        for (int i=0; i<localClients.size(); i++) {
-            try {
-                if (localClients.elementAt(i).searchResource(r)) x.add(localClients.elementAt(i));
-            } catch (RemoteException e) { serverGui.appendLog("Errore di connessione"); }
-        }
-        return x;
+        Vector<ClientInterface> result = new Vector<ClientInterface>();
+        try {
+            for (int i=0; i<systemServers.size(); i++) {
+                ServerInterface in = (ServerInterface) Naming.lookup(systemServers.elementAt(i));
+                Vector<ClientInterface> aux = in.getClients();
+                for (int j=0; j<aux.size(); j++) {
+                    Vector<ResourceInterface> aux1 = aux.elementAt(j).getResourceList();
+                    for (int k=0; k<aux1.size(); k++) {
+                        if (r.compare(aux1.elementAt(k))) {
+                            result.add(aux.elementAt(j));
+                            break;  
+                        } 
+                    }
+                }
+            }
+        } catch(NotBoundException e1) { serverGui.appendLog("Un server si è disconnesso."); }
+        catch (RemoteException e2) { serverGui.appendLog("Problemi di connessione."); }
+        catch (MalformedURLException e3) { serverGui.appendLog("Url malformato."); }
+        return result;
     }
     
     public static void main(String[] args) throws Exception {

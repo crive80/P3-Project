@@ -150,8 +150,8 @@ public class ClientGUI extends JFrame {
         super(n);
         clientReference = r;
         title = n;        
-        width = (int) screenSize.getWidth()/4;
-        height = (int) screenSize.getHeight()/2;
+        width = (int) screenSize.getWidth()/3;
+        height = (int) screenSize.getHeight() - 100;
         
         setMainPanel();
         setTopPanel();
@@ -183,5 +183,9 @@ public class ClientGUI extends JFrame {
 
     public void appendLog(String s) {
         log.append(s + "\n");
+    }
+
+    public void popError(String message) {
+        JOptionPane.showMessageDialog(this,message);
     }
 }

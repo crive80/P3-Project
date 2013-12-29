@@ -64,8 +64,9 @@ public class ServerGUI extends JFrame {
                 BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK),
                 "Client locali connessi",TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial",Font.PLAIN,10)));
         localClientList = new JList();
+        localClientList.setFont(new Font("Arial",Font.BOLD,8));
         centerWestPanel.add(localClientList, BorderLayout.WEST);
-        centerWestPanel.setPreferredSize(new Dimension((int) width/2-10, (int) height/2));
+        centerWestPanel.setPreferredSize(new Dimension((int) width/2-5, (int) height/2));
 
         centerEastPanel = new JPanel();
         centerEastPanel.setOpaque(true);
@@ -74,10 +75,9 @@ public class ServerGUI extends JFrame {
             BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK),
                 "Client globali connessi",TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial",Font.PLAIN,10)));
         globalClientList = new JList();
+        globalClientList.setFont(new Font("Arial",Font.BOLD,8));
         centerEastPanel.add(globalClientList);
-        centerEastPanel.setPreferredSize(new Dimension((int) width/2-10, (int) height/2));
-        JScrollPane scroll = new JScrollPane(centerEastPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        centerEastPanel.setPreferredSize(new Dimension((int) width/2-5, (int) height/2));
     }
     
     private void setBottomPanel() {
@@ -91,6 +91,7 @@ public class ServerGUI extends JFrame {
         log = new JTextArea();
         log.setRows(10);
         log.setEditable(false);
+        log.setFont(new Font("Arial",Font.BOLD,8));
         log.setBackground(Color.BLACK);
         log.setForeground(Color.GREEN);
         
@@ -99,7 +100,6 @@ public class ServerGUI extends JFrame {
     
     class WindowEventHandler extends WindowAdapter {
         public void windowClosing(WindowEvent evt) {
-            System.out.println("Window closed");
             try {
                 serverReference.disconnect();
             }
@@ -113,8 +113,8 @@ public class ServerGUI extends JFrame {
         super(n);
         title = n;        
         serverReference = s;
-        width = (int) screenSize.getWidth()/4;
-        height = (int) screenSize.getHeight()/2;
+        width = (int) screenSize.getWidth()/3;
+        height = (int) screenSize.getHeight() - 100;
 
         addWindowListener(new WindowEventHandler());
         

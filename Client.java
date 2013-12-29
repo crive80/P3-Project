@@ -39,7 +39,11 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
             while (true) { 
                 try {
                     checkServer(); 
-                } catch (Exception exc) { exc.printStackTrace(); }
+                } catch (Exception exc) {  System.out.println(
+                    "CheckServerThread report: Server non più presente nel sistema"); }
+                try {
+                    sleep(10);
+                } catch(InterruptedException e) { System.out.println("ServerChecker Thread interrotto"); }
             }
         }
         public void checkServer() throws Exception {
@@ -84,11 +88,15 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     public void sendRequest(String s1, String s2) {
         try {
             ResourceInterface aux = new Resource(s1,Integer.parseInt(s2));
-            Vector<ClientInterface> v = serverConnected.getRequest(aux);
+            // Controllo che il client non possegga già la risorsa cercata
             for (int i=0; i<res.size(); i++) {
-                if (aux.compare(res.elementAt(i)) == true) clientGUI.appendLog("True");
+                if (res.elementAt(i).compare(aux)) {
+                    clientGUI.popError("Possiedi già la risorsa richiesta!");
+                    return;
+                }
             }
-            clientGUI.appendLog(v.size() + " client trovati");
+            Vector<ClientInterface> v = serverConnected.getRequest(aux);
+            clientGUI.appendLog(v.size() + " client trovati!");
         } catch (RemoteException e) { clientGUI.appendLog("Errore di connessione"); }
     }
 
