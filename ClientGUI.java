@@ -36,6 +36,7 @@ public class ClientGUI extends JFrame {
     private JButton searchButton;
     private JList serverList;
     private JList downloadQueue;
+    private Vector<String> downloadList;
     private JList resourceList;
     private JButton connectButton;
     private Client clientReference;
@@ -71,7 +72,16 @@ public class ClientGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String s = searchField.getText();
                 String [] a = s.split("\\s+"); // separo le parole
-                clientReference.sendRequest(a[0],a[1]);
+                if (a.length < 2) {
+                    popError("Stringa di ricerca errata!");
+                    return;
+                }
+                if (!clientReference.isDownloading()) {
+                    clientReference.sendRequest(a[0],a[1]);
+                } else {
+                    popError("Il client sta già scaricando una risorsa!");
+                    return;
+                }
             }
         });
         topPanel.add(searchField,BorderLayout.WEST);
@@ -110,7 +120,8 @@ public class ClientGUI extends JFrame {
         centerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK),
                 "Coda download",TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial",Font.PLAIN,10)));
         downloadQueue = new JList();
-        downloadQueue.setFont(new Font("Arial",Font.BOLD,6));
+        downloadQueue.setFont(new Font("Arial",Font.BOLD,10));
+        downloadList = new Vector<String>();
         centerPanel.add(downloadQueue,BorderLayout.NORTH);
         /*****/
         DefaultListModel<String> model = new DefaultListModel<String>();
@@ -137,7 +148,7 @@ public class ClientGUI extends JFrame {
                 "Log",TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial",Font.PLAIN,10)));
         bottomPanel.setLayout(new BorderLayout());
         log = new JTextArea();
-        log.setFont(new Font("Arial",Font.PLAIN,9));
+        log.setFont(new Font("Arial",Font.PLAIN,12));
         log.setRows(10);
         log.setEditable(false);
         log.setBackground(Color.BLACK);
@@ -181,11 +192,37 @@ public class ClientGUI extends JFrame {
         resourceList.setModel(model);
     }
 
+    public void setDownloadQueue() {
+        DefaultListModel<String> model = new DefaultListModel<String>();
+        for (int i=0; i<downloadList.size(); i++) { model.addElement(downloadList.elementAt(i)); }
+        downloadQueue.setModel(model);
+    }
+
     public void appendLog(String s) {
         log.append(s + "\n");
     }
 
     public void popError(String message) {
         JOptionPane.showMessageDialog(this,message);
+    }
+
+    public void addDownloadList(String l) {
+        downloadList.add(l);
+        setDownloadQueue();
+    }
+
+    public void popDownloadList(int n) {
+        for (int i=downloadList.size()-1; i>= downloadList.size()-n; i++) {
+            downloadList.remove(i);
+        }
+    }
+
+    public int getDownloadListSize() {
+        return downloadList.size();
+    }
+
+    public void modifyDownloadList(int index, String s) {
+        downloadList.set(index,s);
+        setDownloadQueue();
     }
 }

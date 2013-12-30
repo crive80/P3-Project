@@ -91,7 +91,7 @@ public class ServerGUI extends JFrame {
         log = new JTextArea();
         log.setRows(10);
         log.setEditable(false);
-        log.setFont(new Font("Arial",Font.BOLD,8));
+        log.setFont(new Font("Arial",Font.BOLD,12));
         log.setBackground(Color.BLACK);
         log.setForeground(Color.GREEN);
         
