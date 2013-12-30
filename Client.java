@@ -114,13 +114,14 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         private int parts;
         public void run() {
             synchronized(sync) {
+                clientGUI.eraseDownloadList();
                 downloadThread[] T = new downloadThread[parts];
                 int j = 0;
                 // Schedulazione dei processi
                 for (int i=0; i<T.length; i++) {
                     T[i] = new downloadThread(ci.elementAt(j),ri,i+1);
                     try {
-                        clientGUI.addDownloadList(ri.getName() + "[" + i+1 + "] " + "from " + 
+                        clientGUI.addDownloadList(ri.getName() + "[" + (i+1) + "] " + "from " + 
                         ci.elementAt(j).getClientName() + "{waiting}");
                     } catch (RemoteException e) {
                         clientGUI.appendLog("Errore di connessione!");
@@ -174,6 +175,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
                     clientGUI.appendLog("Errore di connessione");
                     return;
                 }
+                downloading = false;
             }
         }
     }

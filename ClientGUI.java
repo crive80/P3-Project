@@ -38,7 +38,6 @@ public class ClientGUI extends JFrame {
     private JList downloadQueue;
     private Vector<String> downloadList;
     private JList resourceList;
-    private JButton connectButton;
     private Client clientReference;
     
     class WindowEventHandler extends WindowAdapter {
@@ -98,21 +97,10 @@ public class ClientGUI extends JFrame {
                 BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK),
                 "Server disponibili",TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial",Font.PLAIN,10)));
         serverList = new JList();
-        serverList.setFont(new Font("Arial",Font.BOLD,6));
-        connectButton = new JButton("Connetti");
-        connectButton.setFont(new Font("Arial",Font.BOLD,10));
-        connectButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String s = (String) serverList.getSelectedValue();
-                try {
-                    clientReference.connect(s);
-                } catch (Exception exc) { exc.printStackTrace(); }
-            }
-        });        
+        serverList.setFont(new Font("Arial",Font.BOLD,8));
+
         centerWestPanel.setLayout(new BoxLayout(centerWestPanel,BoxLayout.PAGE_AXIS));
         centerWestPanel.add(serverList);
-        centerWestPanel.add(connectButton);
-        //centerWestPanel.setPreferredSize(new Dimension((int) width/2 -25, (int) height/2));
 
         centerPanel = new JPanel();
         centerPanel.setOpaque(true);
@@ -219,6 +207,11 @@ public class ClientGUI extends JFrame {
 
     public int getDownloadListSize() {
         return downloadList.size();
+    }
+
+    public void eraseDownloadList() {
+        downloadList.clear();
+        setDownloadQueue();
     }
 
     public void modifyDownloadList(int index, String s) {
